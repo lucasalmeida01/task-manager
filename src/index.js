@@ -55,10 +55,14 @@ app.post('/users', (request, response) => {
 
 });
 
+//DONE
 app.get('/todos', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  return response.status(201).json(user.todos);
+  // DONE
 });
 
+//DONE
 app.post('/todos', checksExistsUserAccount, (request, response) => {
   const { title, deadline } = request.body;
   const { user } = request;
@@ -78,8 +82,28 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
   // Complete aqui
 });
 
+//DONE
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { title, deadline } = request.body;
+  const { id } = request.params;
+
+  const todoExists = user.todos.find(todo => todo.id === id);
+  const indexTodoExists = user.todos.findIndex(todo => todo.id === id);
+
+  if (!todoExists) {
+    return response.status(404).json({
+      error: "To do not found for this user!"
+    });
+  }
+
+  else {
+    user.todos[indexTodoExists].title = title;
+    user.todos[indexTodoExists].deadline = deadline;
+
+    return response.status(201).send();
+  }
+
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
