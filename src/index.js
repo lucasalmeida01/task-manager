@@ -107,7 +107,23 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const todoExists = user.todos.find(todo => todo.id === id);
+  const indexTodoExists = user.todos.findIndex(todo => todo.id === id);
+
+  if (!todoExists) {
+    return response.status(404).json({
+      error: "To do not found for this user!"
+    });
+  }
+
+  else {
+    user.todos[indexTodoExists].done = "true";
+
+    return response.status(201).send();
+  }
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
